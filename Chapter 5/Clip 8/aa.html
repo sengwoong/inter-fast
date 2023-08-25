@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- 문서 정보와 뷰포트 설정 -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 외부 스타일 시트 연결 -->
+  <link rel="stylesheet" href="./index.css">
+  <title>Interactive Web</title>
+</head>
+
+<body>
+  <!-- 커서와 리플 효과를 위한 컨테이너 -->
+  <div class="cursor">
+    <!-- 커서의 기본 모양을 나타내는 요소 -->
+    <div class="cursor__default">
+      <span class="cursor__default__inner"></span>
+    </div>
+    <!-- 커서의 경로를 따라가는 요소 -->
+    <div class="cursor__trace">
+      <span class="cursor__trace__inner"></span>
+    </div>
+  </div>
+
+  <!-- 로딩 화면을 위한 섹션 -->
+  <section class="preloader shown-area">
+    <!-- 로딩 버튼 -->
+    <button class="preloader__btn">
+      <!-- 로딩 중일 때 보여지는 텍스트 -->
+      <span class="preloader__btn_hold">Hold</span>
+    </button>
+  </section>
+
+  <!-- 헤더 섹션 -->
+  <section class="header hidden-area">
+    <!-- 원 모양을 나타내는 요소 -->
+    <span class="circle" id="circle-1"></span>
+    <span class="circle" id="circle-2"></span>
+    <!-- 큐브 이미지 -->
+    <img id="cube__image_1" src="../images/Lovepik_com-401467010-cube.png" alt="cube image" class="cube__image">
+    <img id="cube__image_2" src="../images/Lovepik_com-401467010-cube.png" alt="cube image" class="cube__image">
+    <img id="cube__image_3" src="../images/Lovepik_com-401467010-cube.png" alt="cube image" class="cube__image">
+    <img id="cube__image_4" src="../images/Lovepik_com-401467010-cube.png" alt="cube image" class="cube__image">
+    <!-- 헤더 제목 -->
+    <h1 class="header__title">
+      <div>LAST ART</div>
+      <div>PROJECTS</div>
+    </h1>
+  </section>
+
+  <!-- 포스터 섹션 -->
+  <section class="poster hidden-area">
+    <!-- 패럴랙스 효과를 위한 컨테이너 -->
+    <div class="poster__parallax">
+      <!-- 각각의 포스터 이미지 컨테이너 -->
+      <div id="poster-image_wrapper_1" class="poster-image_wrapper">
+        <img id="poster-image_1" src="../images/posterImages/poster_image_1.png" alt="" class="poster-image">
+      </div>
+      <div id="poster-image_wrapper_2" class="poster-image_wrapper">
+        <img id="poster-image_2" src="../images/posterImages/poster_image_2.png" alt="" class="poster-image">
+      </div>
+      <div id="poster-image_wrapper_3" class="poster-image_wrapper">
+        <img id="poster-image_3" src="../images/posterImages/poster_image_3.png" alt="" class="poster-image">
+      </div>
+    </div>
+  </section>
+</body>
+
+<script>
+  // 마우스 움직임 이벤트 처리
+  document.addEventListener("mousemove", (e) => {
+    // 커서 내부 요소 위치 업데이트
+    const cursorDefaultInner = document.querySelector(".cursor__default__inner");
+    const cursorTraceInner = document.querySelector(".cursor__trace__inner");
+    cursorDefaultInner.style.top = e.clientY + "px";
+    cursorDefaultInner.style.left = e.clientX + "px";
+    cursorTraceInner.style.top = e.clientY + "px";
+    cursorTraceInner.style.left = e.clientX + "px";
+  });
+
+  // 커서 활성화 및 비활성화 처리
+  const cursor = document.querySelector(".cursor");
+  document.addEventListener("mousedown", () => {
+    // 마우스 버튼 누를 때 커서 활성화 스타일 적용
+    cursor.classList.add("cursor--active");
+  });
+  document.addEventListener("mouseup", () => {
+    // 마우스 버튼 뗄 때 커서 비활성화 스타일 적용
+    cursor.classList.remove("cursor--active");
+  });
+
+  // 리플 효과 생성 함수
+  function createRipple(e) {
+    // 새로운 span 요소 생성
+    let ripple = document.createElement("span");
+
+    // ripple 클래스 추가
+    ripple.classList.add("ripple");
+
+    // ripple 요소를 커서에 추가
+    cursor.appendChild(ripple);
+
+    // 클릭 위치에 따라 ripple 위치 설정
+    ripple.style.top = (e.clientY - ripple.clientHeight / 2) + "px";
+    ripple.style.left = (e.clientX - ripple.clientWidth / 2) + "px";
+
+    // 애니메이션이 끝나면 ripple 요소 제거
+    ripple.addEventListener("animationend", () => {
+      cursor.removeChild(ripple);
+    });
+  }
+
+  // 클릭 이벤트에 따라 리플 효과 생성
+  document.addEventListener("click", (e) => {
+    createRipple(e);
+  });
+
+  // 로딩 화면 애니메이션 및 표시 제어
+  const preloaderBtn = document.querySelector(".preloader__btn");
+  let intervalId = null;
+  let scale = 1;
+  const preloaderHideThreshold = 18;
+
+  // ...
+
+  // 헤더 섹션 마우스 이동에 따른 요소 변화 처리
+  const header = document.querySelector(".header");
+  // ...
+
+  // 포스터 이미지 나타남 여부 관찰
+  const observer = new IntersectionObserver((entries) => {
+    // ...
+  }, { threshold: 0.2 });
+
+  // 모든 포스터 이미지 컨테이너에 관찰자 등록
+  document.querySelectorAll(".poster-image_wrapper").forEach((poster) => {
+    observer.observe(poster);
+  });
+
+  // 포스터 패럴랙스 효과
+  const posterParallax = document.querySelector(".poster__parallax");
+
+  posterParallax.addEventListener("mousemove", (e) => {
+    // ...
+  });
+</script>
+
+</html>
